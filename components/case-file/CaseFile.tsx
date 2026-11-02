@@ -364,9 +364,13 @@ export function CaseFile({ pages }: { pages: Page[] }) {
             </ul>
           </nav>
 
-          <div className="grain relative min-h-0 flex-1 rounded-[10px] bg-manila-deep p-1.5 [--grain:0.14] lg:p-3">
+          {/* The folder. Its board is a layer of its own, under the tabs (z-10) so the open tab can
+              cross its lip; the sheets sit over the tabs (z-20), so a page swinging out as it turns
+              passes in front of them. */}
+          <div className="relative min-h-0 flex-1 p-1.5 lg:p-3">
+            <div aria-hidden className="grain absolute inset-0 rounded-[10px] bg-manila-deep [--grain:0.14]" />
             <div
-              className="relative h-full [perspective:2400px]"
+              className="relative z-20 h-full [perspective:2400px]"
               onPointerDown={onPointerDown}
               onPointerMove={onPointerMove}
               onPointerUp={(e) => release(e, false)}
