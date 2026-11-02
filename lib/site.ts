@@ -9,7 +9,7 @@ export const site = {
   brand: "ashir develops",
   role: "Freelance developer",
   /** Where the "Email my case" button sends the brief. */
-  email: "ashirdevelops02@gmail.com",
+  email: "info@ashirdevelops.co.uk",
   instagram: "ashirdevelops",
   tiktok: "ashirdevelops",
   portfolio: "https://ashirkhan.com",
