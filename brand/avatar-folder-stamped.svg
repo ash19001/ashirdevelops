@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080"><defs>
+  <filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" seed="4" result="n"/>
+    <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -2.6 0 0 0 2.5" result="speckle"/>
+    <feComposite in="SourceGraphic" in2="speckle" operator="in"/>
+  </filter></defs><rect width="1080" height="1080" fill="#1e2722"/><g transform="translate(197.8 227.3) scale(1.18)"><path fill="#c4a46b" d="M0 46 Q0 18 28 18 H178 Q196 18 206 32 L226 60 H552 Q580 60 580 88 V502 Q580 530 552 530 H28 Q0 530 0 502 Z"/><rect x="0" y="108" width="580" height="422" rx="26" fill="#d8bd88"/><g transform="rotate(-7 290 322)" filter="url(#ink)" fill="none" stroke="#a11a2a">
+      <rect x="92" y="216" width="396" height="212" rx="22" stroke-width="15"/>
+      <rect x="72" y="196" width="436" height="252" rx="32" stroke-width="7"/>
+      <path stroke="none" fill="#a11a2a" d="M190.33 337.20L190.33 351.56L126.18 322.84L126.18 309.99L190.33 281.11L190.33 295.63L142.37 316.45L190.33 337.20M202.18 366.99L241.85 266.67L264.43 266.67L304.02 366.99L279.78 366.99L272.48 346.85L233.87 346.85L226.50 366.99L202.18 366.99M253.10 294.03L241.47 326.94L264.96 326.94L253.33 294.03L253.10 294.03M310.63 381.58L360.72 262.42L374.17 262.42L324.01 381.58L310.63 381.58M453.82 322.84L389.60 351.56L389.60 337.20L437.63 316.45L389.60 295.63L389.60 281.11L453.82 309.99"/>
+    </g></g></svg>

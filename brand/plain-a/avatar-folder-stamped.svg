@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080"><defs>
+  <filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" seed="4" result="n"/>
+    <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -2.6 0 0 0 2.5" result="speckle"/>
+    <feComposite in="SourceGraphic" in2="speckle" operator="in"/>
+  </filter></defs><rect width="1080" height="1080" fill="#1e2722"/><g transform="translate(197.8 227.3) scale(1.18)"><path fill="#c4a46b" d="M0 46 Q0 18 28 18 H178 Q196 18 206 32 L226 60 H552 Q580 60 580 88 V502 Q580 530 552 530 H28 Q0 530 0 502 Z"/><rect x="0" y="108" width="580" height="422" rx="26" fill="#d8bd88"/><g transform="rotate(-9 290 322)" filter="url(#ink)" fill="none" stroke="#a11a2a">
+      <rect x="150" y="190" width="280" height="264" rx="22" stroke-width="16"/>
+      <rect x="129" y="169" width="322" height="306" rx="34" stroke-width="7"/>
+      <path stroke="none" fill="#a11a2a" d="M358.32 383.57L313.47 383.57L313.47 363.63Q312.13 366.63 306.65 372.32Q301.17 378.02 292.17 382.60Q283.17 387.18 271.17 387.18Q253.17 387.18 239.67 378.40Q226.17 369.63 218.67 354.85Q211.17 340.07 211.17 322.07Q211.17 304.07 218.67 289.30Q226.17 274.52 239.67 265.68Q253.17 256.82 271.17 256.82Q282.72 256.82 291.42 260.50Q300.13 264.18 305.52 269.20Q310.92 274.23 313.02 278.43L313.02 260.43L358.32 260.43L358.32 383.57M255.88 322.07Q255.88 330.47 259.77 337.15Q263.67 343.82 270.20 347.57Q276.72 351.32 284.67 351.32Q292.92 351.32 299.22 347.57Q305.52 343.82 309.20 337.15Q312.88 330.47 312.88 322.07Q312.88 313.68 309.20 307Q305.52 300.32 299.22 296.50Q292.92 292.68 284.67 292.68Q276.72 292.68 270.20 296.50Q263.67 300.32 259.77 307Q255.88 313.68 255.88 322.07"/>
+    </g></g></svg>

@@ -1,26 +1,317 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * The case file sits on a green leather desk. Three materials, each with its own ink:
+ *   desk   — the page around the folder
+ *   manila — the folder and its cover
+ *   paper  — the sheets inside
+ * The stamp red is the one accent: it marks the primary action and the stamps, nothing else.
+ */
+@theme {
+  --color-desk: #1e2722;
+  --color-desk-raised: #2a3630;
+  --color-desk-ink: #ece7db;
+  --color-desk-soft: #aab2a6;
+
+  --color-manila: #d8bd88;
+  --color-manila-deep: #c4a46b;
+  --color-manila-ink: #36290f;
+  --color-manila-soft: #5c4826;
+
+  /* Copier white, a touch warm: against it the manila reads as card, not as more paper. */
+  --color-paper: #f5f4f0;
+  --color-paper-deep: #e9e7e1;
+  --color-paper-edge: #d9d5cc;
+  --color-ink: #1d1b17;
+  --color-ink-soft: #57524a;
+
+  /* Rubber-stamp crimson: bluer than terracotta, so it reads as ink, not as clay. */
+  --color-stamp: #c42032;
+  --color-stamp-deep: #a11a2a;
+
+  /* Strong ease-out for UI; the stock one is too gentle to read as deliberate. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-league-spartan), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ---- Type roles ------------------------------------------------------------------------
+ * Five sizes do all the work: small 14 · body 17 · lead 19–22 · head 35–56 · display 41–85.
+ * Display faces tighten as they grow; body text stays at zero tracking.
+ */
+@utility t-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 1.55rem + 4.2vw, 5.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+/* The display size for the cover, which never scrolls: capped by the screen's height as well
+   as its width, so two lines always leave room for the rest on a short laptop or phone. */
+@utility t-cover {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.25rem, min(1.55rem + 4.2vw, 9.5vh), 5.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+@utility t-head {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.125rem, 1.55rem + 2.3vw, 3.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+@utility t-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+@utility t-lead {
+  font-size: clamp(1.1875rem, 1.05rem + 0.45vw, 1.375rem);
+  line-height: 1.42;
+  text-wrap: pretty;
+}
+@utility t-body {
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+@utility t-small {
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+/* ---- Base ------------------------------------------------------------------------------ */
+@layer base {
+  html,
+  body {
+    height: 100%;
+    /* The page itself never scrolls: only a sheet's own content does. */
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  body {
+    background: var(--color-desk);
+    color: var(--color-desk-ink);
+    font-family: var(--font-sans);
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:not(:disabled),
+  [role="button"],
+  summary {
+    cursor: pointer;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-stamp) 22%, transparent);
+    color: inherit;
+  }
+  input,
+  textarea {
+    caret-color: var(--color-stamp);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-stamp);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  .on-desk :focus-visible {
+    outline-color: var(--color-desk-ink);
+  }
+  a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ---- Materials ------------------------------------------------------------------------
+ * In the components layer so a utility on the same element always wins.
+ */
+@layer components {
+/* Paper grain: a tile of fractal noise, laid over the flat colour at low strength. The element
+   must be positioned (relative or absolute) by its own utilities. */
+.grain {
+  isolation: isolate;
+}
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: var(--grain, 0.08);
+  mix-blend-mode: multiply;
+}
+
+/* A sheet's own scroll, for content taller than the sheet (most phones). Up and down only:
+   a tilted print or a stamp poking past the edge must never let the sheet slide sideways. */
+.sheet-scroll {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--color-ink) 28%, transparent) transparent;
+  /* Vertical pans scroll the sheet; horizontal ones are left for the page turn. */
+  touch-action: pan-y;
+}
+.sheet-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.sheet-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--color-ink) 28%, transparent);
+  border-radius: 3px;
+}
+
+/* A sheet laid out to fit, like the cover: it does not scroll at all. The one exception is a
+   phone held sideways, too short for anything to fit, where clipping would lose the buttons. */
+.sheet-fit {
+  overflow: hidden;
+  touch-action: pan-y;
+}
+@media (max-height: 480px) {
+  .sheet-fit {
+    overflow-y: auto;
+  }
+}
+/* Rubber-stamp ink: a speckled alpha mask so the impression is uneven, and multiply so the
+   text under it shows through, as real ink does. */
+.stamp-ink {
+  mix-blend-mode: multiply;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='120'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -3.2 0 0 0 2.75'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='120'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -3.2 0 0 0 2.75'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E");
+  -webkit-mask-size: 240px 120px;
+  mask-size: 240px 120px;
+}
+
+/* The cover's wide-screen spacing and print sizes. The first set is the cover's own layout; the
+   second only applies on screens too short for it (most laptops), since the cover never scrolls. */
+@media (min-width: 64rem) {
+  .cover-vars {
+    --c-pt: 2.5rem;
+    --c-pb: 3rem;
+    --c-h1: 3.5rem;
+    --c-lead: 1.25rem;
+    --c-cta: 2rem;
+    /* A minimum only: the facts sit at the foot of the cover whenever there is room. */
+    --c-facts: 1.5rem;
+    --c-p1-top: 18%;
+    --c-p1-w: 92%;
+    --c-p2-bottom: 6%;
+    --c-p2-w: 84%;
+    /* "Cases solved" takes the width of its one line; "What I build" gets the rest. */
+    --c-facts-cols: max-content minmax(0, 1fr);
+    --c-solved: block;
+  }
+}
+@media (min-width: 64rem) and (max-height: 880px) {
+  .cover-vars {
+    --c-pt: clamp(1.5rem, 4.5vh, 2.75rem);
+    --c-pb: clamp(1.5rem, 4.5vh, 2.75rem);
+    --c-h1: clamp(0.875rem, 3vh, 3rem);
+    --c-lead: clamp(0.625rem, 1.6vh, 1.25rem);
+    --c-cta: clamp(0.875rem, 2.8vh, 2rem);
+    --c-facts: clamp(0.875rem, 2.4vh, 2.5rem);
+    --c-p1-top: 10%;
+    --c-p1-w: min(92%, 40vh);
+    --c-p2-bottom: 4%;
+    --c-p2-w: min(84%, 36vh);
+  }
+}
+/* The shortest laptop screens: "Cases solved" steps aside (the prints name the cases). */
+@media (min-width: 64rem) and (max-height: 700px) {
+  .cover-vars {
+    --c-facts-cols: minmax(0, 1fr);
+    --c-solved: none;
+  }
+}
+
+/* The case-study grid. One column on a phone, in reading order with the evidence woven in;
+   two on a wide screen, words on the left, evidence on the right. Either way the problem is
+   followed straight away by the result, so the payoff is on the first screen. */
+.case-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "title" "hero" "lead" "verdict" "built" "proof";
+  column-gap: 3rem;
+}
+@media (min-width: 64rem) {
+  .case-grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr;
+    grid-template-areas:
+      "title   hero"
+      "lead    hero"
+      "verdict proof"
+      "built   proof";
+  }
+}
+
+/* The visitor's own case: the message and its send buttons sit side by side with the form on
+   a wide screen; on a phone the buttons follow the fields. */
+.brief-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "head" "form" "send" "preview" "direct";
+  column-gap: 3rem;
+}
+@media (min-width: 64rem) {
+  .brief-grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-rows: auto auto auto 1fr;
+    grid-template-areas:
+      "head preview"
+      "form preview"
+      "form send"
+      "form direct";
+  }
+}
+}
+
+/* ---- Entrances ------------------------------------------------------------------------
+ * Only with script running (html.js), so nothing stays hidden if it fails. Each element sets
+ * --i for its place in the stagger.
+ */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+.js .rise {
+  animation: rise 640ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 140ms);
+}
+
+/* Without script, the tabs and arrows are plain links: bring the linked sheet to the top. */
+html:not(.js) .sheet:target {
+  z-index: 100 !important;
+  visibility: visible !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+html:not(.js) .stamp-motion {
+  opacity: 0.88 !important;
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .rise {
+    animation: rise-fade 300ms ease both;
+  }
+  @keyframes rise-fade {
+    from {
+      opacity: 0;
+    }
+  }
 }
